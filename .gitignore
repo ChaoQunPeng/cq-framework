@@ -1,0 +1,47 @@
+# Dependencies
+# Ignore dependency folders in the root and every workspace subdirectory.
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+dist-ssr/
+coverage/
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment files
+*.local
+.env
+.env.*
+
+# Editor and OS files
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Tool caches
+.eslintcache
+.vite/
+
+# Test artifacts
+cypress/videos/
+cypress/screenshots/
+__screenshots__/
+
+# Vite generated files
+*.timestamp-*-*.mjs
