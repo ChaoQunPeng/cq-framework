@@ -13,7 +13,6 @@ my-project
 │
 ├── domain
 ├── shared
-├── api-contract
 │
 ├── package.json
 ├── pnpm-workspace.yaml
