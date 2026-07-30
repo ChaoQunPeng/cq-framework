@@ -1,3 +1,15 @@
+@import "tailwindcss";
+
+/* 项目尺寸类以 1px 为基础单位，使工具类数字与设计稿像素值一致。 */
+@theme {
+  --spacing: 1px;
+}
+
+/* 字号工具类使用 text-size-{像素值}，例如 text-size-14。 */
+@utility text-size-* {
+  font-size: calc(--value(integer) * 1px);
+}
+
 :root {
   font-family:
     Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;

@@ -26,7 +26,7 @@ function AdminHeader() {
 
   return (
     <Header className="app-header">
-      <span className="app-header-title">Admin后台</span>
+      <span className="text-size-18 font-semibold">Admin后台</span>
 
       <Dropdown menu={{ items: userMenuItems }} placement="bottomRight" trigger={['click']}>
         <Button type="text" className="app-user-trigger" aria-label="打开用户菜单">

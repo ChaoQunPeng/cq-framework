@@ -5,7 +5,7 @@ import DashboardPage from './pages/DashboardPage'
 import LoginPage from './pages/LoginPage'
 import SettingsPage from './pages/SettingsPage'
 import UsersPage from './pages/UsersPage'
-import './App.css'
+import './App.scss'
 
 /** 后台路由守卫，未登录时记录目标地址并跳转到登录页。 */
 function ProtectedRoute() {
