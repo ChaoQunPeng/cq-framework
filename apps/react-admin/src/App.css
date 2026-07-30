@@ -68,6 +68,11 @@
   gap: 8px;
 }
 
+.app-header-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
 .app-user-trigger {
   display: flex;
   align-items: center;
@@ -75,6 +80,10 @@
   height: 40px;
   padding: 0 10px;
   color: rgba(0, 0, 0, 0.88);
+}
+
+.app-user-avatar {
+  background: #1677ff;
 }
 
 .app-content {

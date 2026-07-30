@@ -7,6 +7,7 @@ import SettingsPage from './pages/SettingsPage'
 import UsersPage from './pages/UsersPage'
 import './App.css'
 
+/** 后台路由守卫，未登录时记录目标地址并跳转到登录页。 */
 function ProtectedRoute() {
   const location = useLocation()
 
@@ -17,6 +18,7 @@ function ProtectedRoute() {
   return <Outlet />
 }
 
+/** 应用路由入口，区分公开登录页和需要认证的后台页面。 */
 function App() {
   return (
     <Routes>

@@ -18,6 +18,7 @@ type LoginLocationState = {
   from?: string
 }
 
+/** 后台登录页，认证成功后进入用户原本访问的后台地址。 */
 function LoginPage() {
   const [form] = Form.useForm<LoginFormValues>()
   const [messageApi, contextHolder] = message.useMessage()
@@ -31,6 +32,7 @@ function LoginPage() {
     }
   }, [navigate])
 
+  /** 保存登录状态，并优先返回路由守卫记录的目标页面。 */
   const handleSubmit = async (values: LoginFormValues) => {
     signIn(Boolean(values.remember))
     await messageApi.success('登录成功')
@@ -65,6 +67,7 @@ function LoginPage() {
             form={form}
             layout="vertical"
             size="large"
+            autoComplete="on"
             initialValues={{ remember: true }}
             requiredMark={false}
             onFinish={handleSubmit}
@@ -74,7 +77,7 @@ function LoginPage() {
               label="账号"
               rules={[{ required: true, message: '请输入账号' }]}
             >
-              <Input prefix={<UserOutlined />} placeholder="请输入账号" />
+              <Input prefix={<UserOutlined />} placeholder="请输入账号" autoComplete="username" />
             </Form.Item>
             <Form.Item
               name="password"
@@ -84,6 +87,7 @@ function LoginPage() {
               <Input.Password
                 prefix={<LockOutlined />}
                 placeholder="请输入密码"
+                autoComplete="current-password"
               />
             </Form.Item>
             <Form.Item>
