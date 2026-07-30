@@ -1,119 +1,59 @@
-import {
-  DashboardOutlined,
-  LogoutOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  SettingOutlined,
-  TeamOutlined,
-  UserOutlined
-} from '@ant-design/icons'
-import { Avatar, Breadcrumb, Button, Drawer, Dropdown, Grid, Layout, Menu, type MenuProps } from 'antd'
-import { useState } from 'react'
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { signOut } from '../auth'
+import { Layout, Menu } from 'antd'
+import { DashboardOutlined, UserOutlined, SettingOutlined } from '@ant-design/icons'
+import { Outlet, useNavigate } from 'react-router-dom'
 
-const { Header, Sider, Content } = Layout
-const { useBreakpoint } = Grid
+const { Header, Sider, Content, Footer } = Layout
 
-const menuItems: MenuProps['items'] = [
-  { key: '/dashboard', icon: <DashboardOutlined />, label: '工作台' },
-  { key: '/users', icon: <TeamOutlined />, label: '用户管理' },
-  { key: '/settings', icon: <SettingOutlined />, label: '系统设置' }
-]
-
-const pageNames: Record<string, string> = {
-  '/dashboard': '工作台',
-  '/users': '用户管理',
-  '/settings': '系统设置'
-}
-
-function Brand({ collapsed = false }: { collapsed?: boolean }) {
-  return (
-    <div className="app-brand">
-      <span className="app-brand-mark">CQ</span>
-      {!collapsed && <span className="app-brand-name">CQ Admin</span>}
-    </div>
-  )
-}
-
+/** 后台主布局，统一承载顶部导航、侧边菜单和路由页面内容。 */
 function AdminLayout() {
-  const [collapsed, setCollapsed] = useState(false)
-  const [drawerOpen, setDrawerOpen] = useState(false)
-  const screens = useBreakpoint()
-  const isDesktop = screens.md
-  const location = useLocation()
   const navigate = useNavigate()
-  const currentPage = pageNames[location.pathname] ?? '工作台'
 
-  const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
-    navigate(key)
-    setDrawerOpen(false)
-  }
-
-  const handleLogout = () => {
-    signOut()
-    navigate('/login', { replace: true })
-  }
-
-  const userMenu: MenuProps['items'] = [
+  const items = [
     {
-      key: 'logout',
-      icon: <LogoutOutlined />,
-      label: '退出登录',
-      onClick: handleLogout
+      key: '/dashboard',
+      icon: <DashboardOutlined />,
+      label: '仪表盘'
+    },
+    {
+      key: '/users',
+      icon: <UserOutlined />,
+      label: '用户管理'
+    },
+    {
+      key: '/settings',
+      icon: <SettingOutlined />,
+      label: '设置'
     }
   ]
 
-  const siderMenu = (
-    <>
-      <Brand collapsed={isDesktop && collapsed} />
-      <Menu theme="light" mode="inline" selectedKeys={[location.pathname]} items={menuItems} onClick={handleMenuClick} />
-    </>
-  )
-
   return (
-    <Layout className="app-shell">
-      {isDesktop ? (
-        <Sider width={232} collapsedWidth={80} collapsed={collapsed} trigger={null}>
-          {siderMenu}
+    <Layout style={{ height: '100vh', overflow: 'hidden' }}>
+      <Header
+        style={{
+          color: 'rgba(0, 0, 0, 0.88)',
+          background: '#fff',
+          borderBottom: '1px solid #f0f0f0'
+        }}
+      >
+        Admin后台
+      </Header>
+
+      {/* 固定后台工作区高度，由内容区独立承载纵向滚动。 */}
+      <Layout style={{ flex: 1, minHeight: 0 }}>
+        <Sider width={240} theme="light" style={{ background: '#fff' }}>
+          <Menu mode="inline" items={items} onClick={({ key }) => navigate(key)} />
         </Sider>
-      ) : (
-        <Drawer
-          className="mobile-drawer"
-          width={232}
-          placement="left"
-          closable={false}
-          open={drawerOpen}
-          onClose={() => setDrawerOpen(false)}
+
+        <Content
+          style={{
+            minWidth: 0,
+            padding: 24,
+            overflowY: 'auto',
+            background: '#f5f5f5'
+          }}
         >
-          {siderMenu}
-        </Drawer>
-      )}
-
-      <Layout className="app-main-layout" style={{ marginInlineStart: isDesktop ? (collapsed ? 80 : 232) : 0 }}>
-        <Header className="app-header">
-          <Button
-            type="text"
-            aria-label={collapsed ? '展开侧边栏' : '收起侧边栏'}
-            icon={isDesktop ? collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined /> : <MenuUnfoldOutlined />}
-            onClick={() => (isDesktop ? setCollapsed(value => !value) : setDrawerOpen(true))}
-          />
-          <div className="app-header-actions">
-            <Dropdown menu={{ items: userMenu }} placement="bottomRight">
-              <Button type="text" className="app-user-trigger">
-                <Avatar size={28} icon={<UserOutlined />} />
-                <span className="app-user-name">管理员</span>
-              </Button>
-            </Dropdown>
-          </div>
-        </Header>
-
-        <Content className="app-content">
-          <div className="page-heading">
-            <Breadcrumb items={[{ title: '首页' }, { title: currentPage }]} />
-            <h1>{currentPage}</h1>
-          </div>
           <Outlet />
+          <Footer style={{ textAlign: 'center' }}>Admin System ©2026</Footer>
         </Content>
       </Layout>
     </Layout>

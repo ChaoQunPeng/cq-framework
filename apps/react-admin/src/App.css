@@ -17,7 +17,7 @@
   height: 64px;
   padding: 0 20px;
   overflow: hidden;
-  color: #fff;
+  color: rgba(0, 0, 0, 0.88);
   white-space: nowrap;
 }
 
@@ -96,114 +96,6 @@
   color: rgba(0, 0, 0, 0.88);
   font-size: 24px;
   line-height: 1.4;
-}
-
-.dashboard-welcome {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 20px;
-  padding: 24px;
-  background: #fff;
-  border: 1px solid #f0f0f0;
-  border-radius: 8px;
-}
-
-.dashboard-welcome-main {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  min-width: 0;
-}
-
-.dashboard-welcome h2 {
-  margin: 0 0 6px;
-  font-size: 20px;
-}
-
-.dashboard-welcome p {
-  margin: 0;
-  color: rgba(0, 0, 0, 0.45);
-}
-
-.metric-card,
-.panel-card {
-  height: 100%;
-}
-
-.metric-card .ant-statistic-title {
-  margin-bottom: 12px;
-}
-
-.metric-trend {
-  margin-top: 12px;
-  color: rgba(0, 0, 0, 0.45);
-  font-size: 13px;
-}
-
-.metric-trend strong {
-  margin-inline-end: 6px;
-  color: #52c41a;
-}
-
-.dashboard-row {
-  margin-top: 20px;
-}
-
-.progress-row + .progress-row {
-  margin-top: 20px;
-}
-
-.progress-label {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 8px;
-  color: rgba(0, 0, 0, 0.65);
-}
-
-.activity-item {
-  display: flex;
-  gap: 12px;
-}
-
-.activity-copy {
-  min-width: 0;
-}
-
-.activity-copy p {
-  margin: 0;
-  color: rgba(0, 0, 0, 0.88);
-}
-
-.activity-copy time {
-  color: rgba(0, 0, 0, 0.45);
-  font-size: 12px;
-}
-
-.table-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.table-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.settings-card {
-  max-width: 880px;
-}
-
-.settings-form {
-  max-width: 560px;
-  padding-top: 8px;
 }
 
 .login-page {
@@ -323,7 +215,7 @@
 
 .mobile-drawer .ant-drawer-body {
   padding: 0;
-  background: #001529;
+  background: #fff;
 }
 
 @media (max-width: 992px) {
@@ -344,16 +236,6 @@
 @media (max-width: 768px) {
   .app-content {
     padding: 16px;
-  }
-
-  .dashboard-welcome {
-    align-items: flex-start;
-    flex-direction: column;
-    padding: 20px;
-  }
-
-  .dashboard-welcome-main {
-    align-items: flex-start;
   }
 
   .login-brand-panel {
@@ -379,13 +261,4 @@
     padding-inline: 12px;
   }
 
-  .dashboard-welcome-main .ant-avatar {
-    display: none;
-  }
-
-  .table-filters,
-  .table-filters .ant-input-search,
-  .table-filters .ant-select {
-    width: 100% !important;
-  }
 }
