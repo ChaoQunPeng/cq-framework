@@ -6,7 +6,7 @@ import {
 import { Button, Checkbox, Form, Input, message } from 'antd'
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { isAuthenticated, signIn } from '../auth'
+import { isAuthenticated, signIn } from '../../auth'
 
 type LoginFormValues = {
   username: string

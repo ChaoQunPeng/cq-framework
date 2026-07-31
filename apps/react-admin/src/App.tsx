@@ -1,10 +1,10 @@
 import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import { isAuthenticated } from './auth'
 import AdminLayout from './layouts/AdminLayout'
-import DashboardPage from './pages/DashboardPage'
-import LoginPage from './pages/LoginPage'
-import SettingsPage from './pages/SettingsPage'
-import UsersPage from './pages/UsersPage'
+import DashboardPage from './pages/dashboard'
+import LoginPage from './pages/login'
+import SettingsPage from './pages/settings'
+import UsersPage from './pages/users'
 import './App.scss'
 
 /** 后台路由守卫，未登录时记录目标地址并跳转到登录页。 */
