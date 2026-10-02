@@ -1,0 +1,4 @@
+# 与 react-admin 的 Biome 格式保持一致，各项目仍使用自己的格式化工具。
+singleQuote: true
+tabWidth: 2
+endOfLine: lf

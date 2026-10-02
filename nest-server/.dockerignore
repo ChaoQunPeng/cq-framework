@@ -1,0 +1,11 @@
+# Dependencies are installed for the target platform during the image build.
+node_modules
+
+# Generated and runtime data must not be included in the image build context.
+dist
+coverage
+uploads
+
+# Local-only files must not be included in the image build context.
+.env
+*.log

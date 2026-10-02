@@ -11,15 +11,20 @@ const mockHistory = {
   replace: mockReplace,
 };
 
-const mockQueryCurrentUser = vi.fn();
+const mockGetStoredCurrentUser = vi.fn();
+const mockGetCurrentUser = vi.fn();
 
 vi.mock('@umijs/max', () => ({
   history: mockHistory,
   Link: ({ children }: any) => children,
 }));
 
-vi.mock('@/services/ant-design-pro/api', () => ({
-  currentUser: mockQueryCurrentUser,
+vi.mock('@/utils/auth', () => ({
+  getStoredCurrentUser: mockGetStoredCurrentUser,
+}));
+
+vi.mock('@/services/auth', () => ({
+  getCurrentUser: mockGetCurrentUser,
 }));
 
 vi.mock('@/components', () => ({
@@ -51,6 +56,13 @@ vi.mock('../config/defaultSettings', () => ({
 describe('app getInitialState', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockGetCurrentUser.mockResolvedValue({
+      id: 'admin-id',
+      username: 'Test User',
+      phone: '13800000000',
+      roleCodes: [],
+      permissionCodes: [],
+    });
     mockHistory.location = {
       pathname: '/welcome',
       search: '',
@@ -58,29 +70,29 @@ describe('app getInitialState', () => {
     };
   });
 
-  it('should fetch currentUser when not on login page', async () => {
+  it('should restore currentUser when not on login page', async () => {
     const { getInitialState } = await import('./app');
-    mockQueryCurrentUser.mockResolvedValue({
-      data: {
-        name: 'Test User',
-        access: 'admin',
-      },
+    mockGetStoredCurrentUser.mockReturnValue({
+      name: 'Test User',
     });
 
     const state = await getInitialState();
 
-    expect(mockQueryCurrentUser).toHaveBeenCalled();
+    expect(mockGetStoredCurrentUser).toHaveBeenCalled();
     expect(state.currentUser).toEqual({
+      userid: 'admin-id',
       name: 'Test User',
-      access: 'admin',
+      phone: '13800000000',
+      roleCodes: [],
+      permissionCodes: [],
     });
     expect(state.settingDrawerOpen).toBe(false);
     expect(state.fetchUserInfo).toBeDefined();
   });
 
-  it('should redirect to login when currentUser fetch fails (401)', async () => {
+  it('should redirect to login when currentUser is unavailable', async () => {
     const { getInitialState } = await import('./app');
-    mockQueryCurrentUser.mockRejectedValue(new Error('401 Unauthorized'));
+    mockGetStoredCurrentUser.mockReturnValue(undefined);
 
     const state = await getInitialState();
 
@@ -100,19 +112,19 @@ describe('app getInitialState', () => {
 
     const state = await getInitialState();
 
-    expect(mockQueryCurrentUser).not.toHaveBeenCalled();
+    expect(mockGetStoredCurrentUser).not.toHaveBeenCalled();
     expect(state.currentUser).toBeUndefined();
     expect(state.fetchUserInfo).toBeDefined();
   });
 
-  it('should encode redirect path correctly on 401', async () => {
+  it('should encode redirect path correctly when the session is unavailable', async () => {
     const { getInitialState } = await import('./app');
     mockHistory.location = {
       pathname: '/admin/users',
       search: '?page=2',
       hash: '#section',
     };
-    mockQueryCurrentUser.mockRejectedValue(new Error('401'));
+    mockGetStoredCurrentUser.mockReturnValue(undefined);
 
     await getInitialState();
 
@@ -123,9 +135,7 @@ describe('app getInitialState', () => {
 
   it('should include default settings in initial state', async () => {
     const { getInitialState } = await import('./app');
-    mockQueryCurrentUser.mockResolvedValue({
-      data: { name: 'User' },
-    });
+    mockGetStoredCurrentUser.mockReturnValue({ name: 'User' });
 
     const state = await getInitialState();
 
@@ -134,13 +144,19 @@ describe('app getInitialState', () => {
 
   it('fetchUserInfo should return user data on success', async () => {
     const { getInitialState } = await import('./app');
-    mockQueryCurrentUser.mockResolvedValue({
-      data: { name: 'Fetched User', access: 'user' },
+    mockGetStoredCurrentUser.mockReturnValue({
+      name: 'Fetched User',
     });
 
     const state = await getInitialState();
 
     const user = await state.fetchUserInfo?.();
-    expect(user).toEqual({ name: 'Fetched User', access: 'user' });
+    expect(user).toEqual({
+      userid: 'admin-id',
+      name: 'Test User',
+      phone: '13800000000',
+      roleCodes: [],
+      permissionCodes: [],
+    });
   });
 });

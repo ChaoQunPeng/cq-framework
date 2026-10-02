@@ -1,7 +1,7 @@
 {
   "name": "cq-framework",
   "version": "1.0.0",
-  "description": "``` my-project │ ├── apps │   ├── diary │   ├── admin │   ├── website │   └── server │ ├── domain ├── shared ├── api-contract │ ├── package.json ├── pnpm-workspace.yaml └── README.md ```",
+  "description": "NestJS 与 React Admin 通用管理框架套件",
   "main": "index.js",
   "directories": {
     "doc": "docs"

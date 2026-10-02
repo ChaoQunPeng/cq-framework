@@ -1,10 +1,10 @@
-import { BookOutlined } from '@ant-design/icons';
-import { history } from '@umijs/max';
-import { Button, Tooltip } from 'antd';
-import React from 'react';
-import { LangDropdown } from './LangDropdown';
-import useHeaderActionStyles from './style';
-import { VersionDropdown } from './VersionDropdown';
+import { BookOutlined } from "@ant-design/icons";
+import { history } from "@umijs/max";
+import { Button, Tooltip } from "antd";
+import React from "react";
+import { LangDropdown } from "./LangDropdown";
+import useHeaderActionStyles from "./style";
+import { VersionDropdown } from "./VersionDropdown";
 
 export const DocLink: React.FC = () => {
   const { styles } = useHeaderActionStyles();
@@ -16,7 +16,7 @@ export const DocLink: React.FC = () => {
         icon={<BookOutlined />}
         aria-label="使用文档"
         onClick={() => {
-          history.push('/welcome');
+          history.push("/welcome");
         }}
       />
     </Tooltip>

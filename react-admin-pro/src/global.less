@@ -65,6 +65,14 @@ body,
   display: none;
 }
 
+// PageContainer 的页头（面包屑 / 标题）与内容区共用同一个内边距 token，
+// 内容区已收紧到 16px，这里单独把页头的左右留白补回来，避免面包屑紧贴页面左边缘。
+// 选择器多带一层容器类，确保优先级高于 antd 运行时注入的 token 样式。
+.ant-pro-page-container .ant-page-header.ant-pro-page-container-warp-page-header {
+  padding-inline-start: 40px;
+  padding-inline-end: 40px;
+}
+
 canvas {
   display: block;
 }

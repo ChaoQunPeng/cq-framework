@@ -1,25 +1,19 @@
-import { CheckOutlined, GlobalOutlined } from '@ant-design/icons';
-import { getAllLocales, getLocale, setLocale } from '@umijs/max';
-import type { MenuProps } from 'antd';
-import { Button } from 'antd';
-import { useMemo } from 'react';
-import HeaderDropdown from '../HeaderDropdown';
-import useHeaderActionStyles from './style';
+import { CheckOutlined, GlobalOutlined } from "@ant-design/icons";
+import { getAllLocales, getLocale, setLocale } from "@umijs/max";
+import type { MenuProps } from "antd";
+import { Button } from "antd";
+import { useMemo } from "react";
+import HeaderDropdown from "../HeaderDropdown";
+import useHeaderActionStyles from "./style";
 
 const localeLabelMap: Record<string, { emoji: string; label: string }> = {
-  'zh-CN': { emoji: '🇨🇳', label: '简体中文' },
-  'zh-TW': { emoji: '🇭🇰', label: '繁體中文' },
-  'en-US': { emoji: '🇺🇸', label: 'English' },
-  'ja-JP': { emoji: '🇯🇵', label: '日本語' },
-  'pt-BR': { emoji: '🇧🇷', label: 'Português' },
-  'id-ID': { emoji: '🇮🇩', label: 'Bahasa Indonesia' },
-  'fa-IR': { emoji: '🇮🇷', label: 'فارسی' },
-  'bn-BD': { emoji: '🇧🇩', label: 'বাংলা' },
+  "zh-CN": { emoji: "🇨🇳", label: "简体中文" },
+  "en-US": { emoji: "🇺🇸", label: "English" },
 };
 
-const onLangClick: MenuProps['onClick'] = ({ key }) => {
-  if (key.startsWith('lang-')) {
-    setLocale(key.replace('lang-', ''), false);
+const onLangClick: MenuProps["onClick"] = ({ key }) => {
+  if (key.startsWith("lang-")) {
+    setLocale(key.replace("lang-", ""), false);
   }
 };
 
@@ -33,15 +27,17 @@ export const LangDropdown: React.FC = () => {
     return null;
   }
 
-  const langItems: MenuProps['items'] = supportLocales.map((locale) => ({
+  const langItems: MenuProps["items"] = supportLocales.map((locale) => ({
     key: `lang-${locale}`,
     icon:
       locale === currentLocale ? (
-        <CheckOutlined style={{ color: '#52c41a' }} />
+        <CheckOutlined style={{ color: "#52c41a" }} />
       ) : (
-        <span style={{ display: 'inline-block', width: 14 }} />
+        <span style={{ display: "inline-block", width: 14 }} />
       ),
-    label: `${localeLabelMap[locale]?.emoji ?? ''} ${localeLabelMap[locale]?.label ?? locale}`,
+    label: `${localeLabelMap[locale]?.emoji ?? ""} ${
+      localeLabelMap[locale]?.label ?? locale
+    }`,
   }));
 
   return (

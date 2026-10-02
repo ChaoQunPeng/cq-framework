@@ -13,8 +13,12 @@ const Settings: ProLayoutProps & {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: 'Ant Design Pro',
-  logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
+  // 允许多个一级菜单同时展开，避免切换菜单时自动收起其他分组。
+  menu: {
+    autoClose: false,
+  },
+  title: 'CQ Admin',
+  logo: '/logo.svg',
   iconfontUrl: '',
   token: {
     // 参见ts声明，demo 见文档，通过token 修改样式

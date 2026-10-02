@@ -2,12 +2,14 @@
 
 import { join } from 'node:path';
 import { defineConfig } from '@umijs/max';
+import { codeInspectorPlugin } from 'code-inspector-plugin';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 
 import routes from './routes';
 
 const { UMI_ENV = 'dev' } = process.env;
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 // Compute commit hash: env vars take precedence, fall back to git at build time
 const commitHash =
@@ -36,6 +38,24 @@ const PUBLIC_PATH: string = '/';
 export default defineConfig({
   alias: {
     '@root': join(__dirname, '..'),
+  },
+  /**
+   * @name 开发环境源码定位
+   * @description Code Inspector 尚未支持 Utoopack，因此本地开发使用 webpack 注入源码定位能力。
+   * 同时为欢迎页引用的 Markdown 文档补充 webpack loader，保持现有页面功能不变。
+   */
+  chainWebpack(memo) {
+    if (!isDevelopment) return;
+
+    memo.module
+      .rule('markdown-raw')
+      .test(/\.md$/)
+      .use('markdown-raw-loader')
+      .loader(join(__dirname, 'md-raw-loader.cjs'));
+
+    memo
+      .plugin('code-inspector-plugin')
+      .use(codeInspectorPlugin({ bundler: 'webpack' }));
   },
   /**
    * @name 开启 hash 模式
@@ -114,7 +134,7 @@ export default defineConfig({
    * @name layout 插件
    * @doc https://umijs.org/docs/max/layout-menu
    */
-  title: 'Ant Design Pro',
+  title: 'CQ Admin',
   layout: {
     locale: true,
     ...defaultSettings,
@@ -147,7 +167,7 @@ export default defineConfig({
   antd: {
     appConfig: {},
     configProvider: {
-      variant: 'filled',
+      variant: 'outlined',
       theme: {
         token: {
           fontFamily: 'AlibabaSans, sans-serif',
@@ -191,40 +211,39 @@ export default defineConfig({
   ],
 
   //================ pro 插件配置 =================
-  plugins: ['@umijs/max-plugin-openapi', '@umijs/request-record'],
+  plugins: ['@umijs/max-plugin-openapi'],
 
-  /**
-   * @name openAPI 插件的配置
-   * @description 基于 openapi 的规范生成serve 和mock，能减少很多样板代码
-   * @doc https://pro.ant.design/zh-cn/docs/openapi/
-   */
-  openAPI: [
-    {
-      requestLibPath: "import { request } from '@umijs/max'",
-      // 或者使用在线的版本
-      // schemaPath: "https://gw.alipayobjects.com/os/antfincdn/M%24jrzTTYJN/oneapi.json"
-      schemaPath: join(__dirname, 'oneapi.json'),
-      mock: false,
-    },
-  ],
+  // 仅执行生成命令时读取 Nest Swagger，正常启动前端不依赖后端文档接口。
+  ...(process.env.OPENAPI_GENERATE === '1'
+    ? {
+        openAPI: {
+          schemaPath: 'http://localhost:3000/api-docs-json',
+          projectName: 'cq-framework',
+        },
+      }
+    : {}),
 
   tailwindcss: {},
 
   mock: {
     include: ['src/pages/**/_mock.ts'],
-    exclude: ['mock/requestRecord.mock.js'],
   },
-  utoopack: {
-    module: {
-      rules: {
-        '*.md': {
-          loaders: [{ loader: join(__dirname, 'md-raw-loader.cjs') }],
-          as: '*.js',
+  /**
+   * @name 生产环境 Utoopack 构建
+   * @description 本地开发关闭 Utoopack 以启用源码定位，生产构建继续沿用现有 Utoopack 和 Markdown 规则。
+   */
+  utoopack: isDevelopment
+    ? false
+    : {
+      module: {
+        rules: {
+          '*.md': {
+            loaders: [{ loader: join(__dirname, 'md-raw-loader.cjs') }],
+            as: '*.js',
+          },
         },
       },
     },
-  },
-  requestRecord: {},
   exportStatic: {},
   define: {
     'process.env.CI': process.env.CI,

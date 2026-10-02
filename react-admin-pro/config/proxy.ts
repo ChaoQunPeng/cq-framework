@@ -10,31 +10,19 @@
  * @doc https://umijs.org/docs/guides/proxy
  */
 export default {
-  // 如果需要自定义本地开发服务器  请取消注释按需调整
-  // dev: {
-  //   // localhost:8000/api/** -> https://preview.pro.ant.design/api/**
-  //   '/api/': {
-  //     // 要代理的地址
-  //     target: 'https://preview.pro.ant.design',
-  //     // 配置了这个可以从 http 代理到 https
-  //     // 依赖 origin 的功能可能需要这个，比如 cookie
-  //     changeOrigin: true,
-  //   },
-  // },
-  /**
-   * @name 详细的代理配置
-   * @doc https://github.com/chimurai/http-proxy-middleware
-   */
-  test: {
-    // localhost:8000/api/** -> https://pro-api.ant-design-demo.workers.dev/api/**
-    '/api/': {
-      target: 'https://pro-api.ant-design-demo.workers.dev',
+  dev: {
+    // 管理后台接口统一使用 /api/admin 前缀并代理到本地 Nest 服务。
+    '/api/admin/': {
+      target: 'http://localhost:3000',
       changeOrigin: true,
     },
-  },
-  pre: {
-    '/api/': {
-      target: 'your pre url',
+    // 公共上传接口由本地 Nest 服务提供。
+    '/api/common': {
+      target: 'http://localhost:3000',
+      changeOrigin: true,
+    },
+    '/uploads/': {
+      target: 'http://localhost:3000',
       changeOrigin: true,
     },
   },

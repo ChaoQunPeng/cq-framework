@@ -1,44 +1,60 @@
 export default [
+  // 路由 name 使用国际化标识，菜单会按层级映射到对应的 menu.* 文案。
   {
     path: '/user',
     layout: false,
     routes: [
       {
-        name: '登录',
+        name: 'login',
         path: '/user/login',
         component: './user/login',
       },
     ],
   },
+  // 欢迎页不绑定业务权限，作为所有已登录管理员的统一入口。
   {
     path: '/welcome',
-    name: '欢迎',
-    icon: 'smile',
+    name: 'home',
+    icon: 'home',
     component: './Welcome',
   },
   {
-    path: '/admin',
-    name: '管理页',
-    icon: 'crown',
-    access: 'canAdmin',
+    path: '/system',
+    name: 'system',
+    icon: 'setting',
     routes: [
       {
-        path: '/admin',
-        redirect: '/admin/sub-page',
+        path: '/system',
+        access: 'canReadUser',
+        redirect: '/system/users',
       },
       {
-        path: '/admin/sub-page',
-        name: '二级管理页',
-        component: './Admin',
+        path: '/system/users',
+        name: 'users',
+        access: 'canReadUser',
+        component: './user-management',
+      },
+      {
+        path: '/system/roles',
+        name: 'roles',
+        access: 'canReadRole',
+        component: './role-management',
       },
     ],
   },
+  // 保留旧地址用于历史书签跳转，不再作为独立菜单展示。
   {
-    name: '查询表格',
-    icon: 'table',
-    path: '/list',
-    component: './table-list',
+    path: '/users',
+    access: 'canReadUser',
+    redirect: '/system/users',
+    hideInMenu: true,
   },
+  {
+    path: '/exception/403',
+    hideInMenu: true,
+    component: './exception/403',
+  },
+  // 根地址固定进入无业务权限限制的欢迎页。
   {
     path: '/',
     redirect: '/welcome',

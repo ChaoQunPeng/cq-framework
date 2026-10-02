@@ -1,0 +1,46 @@
+name: cq-framework
+
+services:
+  mongo:
+    image: mongo:7
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      # 开发环境首次启动时初始化单节点副本集，供后端使用固定的 mongo 主机名。
+      test:
+        - CMD-SHELL
+        - >-
+          mongosh --quiet --eval 'try { rs.status().ok } catch (error) { rs.initiate({_id: "rs0", members: [{_id: 0, host: "mongo:27017"}]}).ok }' | grep -q 1
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  api:
+    build: ./nest-server
+    env_file: ./nest-server/.env
+    environment:
+      NODE_ENV: production
+      MONGODB_URI: mongodb://mongo:27017/cq-framework?replicaSet=rs0
+      UPLOAD_BASE_URL: http://localhost:8000
+      CORS_ORIGIN: http://localhost:8000
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      # 上传文件独立于容器镜像保存，重建 API 容器后仍可访问。
+      - uploads-data:/app/uploads
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  admin:
+    build: ./react-admin-pro
+    ports:
+      - "127.0.0.1:8000:80"
+    depends_on:
+      - api
+
+volumes:
+  mongo-data:
+  uploads-data:

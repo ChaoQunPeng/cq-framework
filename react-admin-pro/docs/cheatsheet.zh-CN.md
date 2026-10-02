@@ -26,20 +26,7 @@ cd my-project
 npm install
 ```
 
-项目提供两种模式：
-
-- **完整模式**：包含所有示例页面（Dashboard、表单、列表、权限等），适合参考学习
-- **精简模式**：仅保留登录页和基础布局，适合从零开发
-
-切换精简模式：
-
-```bash
-git add -A && git commit -m "chore: save before simple"  # 先提交，以便回退
-npm run simple                                             # 删除示例页面和多余依赖
-npm install                                                # 更新依赖
-```
-
-> 💡 建议先用完整模式熟悉项目结构，再切换精简模式开始开发。
+当前框架包含管理员登录、用户管理和角色管理。新增业务页面时，按需扩展 `config/routes.ts`。
 
 **目录结构：**
 
@@ -49,7 +36,6 @@ npm install                                                # 更新依赖
 │   ├── routes.ts     # 路由配置
 │   ├── defaultSettings.ts  # 布局主题设置
 │   └── proxy.ts      # 开发代理配置
-├── mock/             # Mock 数据
 ├── src/
 │   ├── components/   # 公共组件
 │   ├── locales/      # 国际化资源
@@ -66,11 +52,9 @@ npm install                                                # 更新依赖
 
 | 命令 | 说明 |
 |------|------|
-| `npm start` | 启动开发服务器（UMI_ENV=dev，带 Mock） |
+| `npm start` | 启动开发服务器（UMI_ENV=dev） |
 | `npm run dev` | 启动开发服务器（UMI_ENV=dev，无 Mock） |
 | `npm run start:no-mock` | 无 Mock 启动 |
-| `npm run start:pre` | 预发布环境启动 |
-| `npm run start:test` | 测试环境启动 |
 | `npm run build` | 构建生产产物 |
 | `npm run preview` | 预览已构建产物（需先 `npm run build`，端口 8000） |
 | `npm run preview:build` | 构建并本地预览（端口 8000） |
@@ -80,16 +64,11 @@ npm install                                                # 更新依赖
 | `npm run biome` | Biome 自动修复 |
 | `npm test` | 运行测试 |
 | `npm run test:coverage` | 测试覆盖率 |
-| `npm run test:update` | 更新测试快照 |
 | `npm run tsc` | 类型检查（不生成文件） |
 | `npm run i18n-remove` | 移除国际化（locale=zh-CN） |
-| `npm run record` | 录制登录场景请求数据 |
 | `npm run openapi` | 根据 OpenAPI 生成 API 代码 |
-| `npm run simple` | 精简模式（删除示例页面和多余依赖） |
 
-> 💡 `UMI_ENV` 用于切换环境配置，对应 `config/proxy.ts` 中的不同代理规则。
-
-> 💡 `npm run simple` 会删除示例页面（dashboard、form、list 等）和多余依赖（plots 等），替换为精简路由，适合从零开始开发。**建议先提交代码，以便需要时回退。**
+> 💡 `config/proxy.ts` 的开发代理会将管理端请求转发到本地 Nest 服务。
 
 **构建工具：** 本项目使用 [utoopack](https://github.com/utooland/utoo)（基于 Turbopack 的新一代打包器）作为默认构建工具，通过 `config/config.ts` 中的 `utoopack` 字段配置。utoopack 兼容 Webpack 配置格式，支持 `module.rules` 配置自定义加载器。
 
@@ -286,7 +265,7 @@ await request('/api/users', { method: 'POST', data: { name: 'test' } });
 npm run openapi
 ```
 
-根据 `config/oneapi.json` 自动生成 `src/services/` 下的 API 调用代码。
+从运行中的 Nest Swagger 文档 `http://localhost:3000/api-docs-json` 生成 `src/services/cq-framework/` 下的接口代码。
 
 > 💡 生成后的代码直接用 `import { request } from '@umijs/max'` 发起请求，无需手动封装。
 
@@ -549,18 +528,10 @@ npx skills add ant-design/ant-design-pro
 ### 生成 API 服务代码
 
 ```bash
-# 1. 编辑 OpenAPI 配置：config/oneapi.json
-# 2. 运行生成命令（覆盖 src/services/ant-design-pro/）
+# 1. 启动 Nest 服务
+# 2. 运行生成命令（覆盖 src/services/cq-framework/）
 npm run openapi
-# 3. 不要手动编辑生成代码，改 oneapi.json 重新生成
-```
-
-### 切换到精简模式
-
-```bash
-git add -A && git commit -m "chore: save before simple"  # 必须先提交
-npm run simple                                              # 不可逆操作
-npm install                                                 # 更新依赖
+# 3. 不要手动编辑生成代码，修改 Nest 接口后重新生成
 ```
 
 ## AI Skills（Claude Code）
@@ -613,12 +584,11 @@ npx skills add ant-design/ant-design-pro
 
 ## 注意事项
 
-- **`src/services/ant-design-pro/`** 为自动生成代码，禁止手动编辑。修改 `config/oneapi.json` 后执行 `npm run openapi` 重新生成
-- **`npm run simple` 不可逆**：会删除示例页面和多余依赖，执行前务必提交代码
+- **`src/services/cq-framework/`** 为自动生成代码，禁止手动编辑。启动 Nest 服务后执行 `npm run openapi`，从 `http://localhost:3000/api-docs-json` 重新生成
 - **`.umi` 临时目录**：`src/.umi` 由 Umi 自动生成，遇到异常可删除后重启开发服务器
 - **Biome 代替 ESLint**：项目使用 Biome 进行 lint 和格式化，不要安装 ESLint 或 Prettier 插件
 - **Commit 规范**：必须遵循 [Conventional Commits](https://www.conventionalcommits.org/)，如 `feat:`, `fix:`, `chore:` 等
 - **`npx antd lint ./src`**：提交前必须零错误零警告
-- **Mock 优先级**：`mock/` 目录为全局 Mock，`src/pages/**/_mock.ts` 为页面级 Mock，两者都会被 Umi 自动注册
+- **Mock 数据**：仅在页面需要本地数据时添加 `src/pages/**/_mock.ts`，认证使用 Nest 服务
 - **样式优先级**：Tailwind（布局）> antd-style（主题 token）> CSS Modules（组件样式）> Less（仅遗留全局样式）
 - **路径别名**：`@/*` → `./src/*`，`@@/*` → `./src/.umi/*`

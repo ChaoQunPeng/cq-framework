@@ -26,20 +26,7 @@ cd my-project
 npm install
 ```
 
-The project offers two modes:
-
-- **Full mode**: Includes all demo pages (Dashboard, Forms, Lists, Access, etc.), great for reference and learning
-- **Simple mode**: Only keeps login page and basic layout, ideal for starting from scratch
-
-Switch to simple mode:
-
-```bash
-git add -A && git commit -m "chore: save before simple"  # Commit first to allow revert
-npm run simple                                             # Remove demo pages and unused deps
-npm install                                                # Update dependencies
-```
-
-> 💡 Start with full mode to learn the project structure, then switch to simple mode for development.
+This framework includes administrator login, user management, and role management. Add business pages to `config/routes.ts` as needed.
 
 **Directory structure:**
 
@@ -49,7 +36,6 @@ npm install                                                # Update dependencies
 │   ├── routes.ts     # Route definitions
 │   ├── defaultSettings.ts  # Layout & theme settings
 │   └── proxy.ts      # Dev proxy config
-├── mock/             # Mock data
 ├── src/
 │   ├── components/   # Shared components
 │   ├── locales/      # i18n resources
@@ -66,11 +52,9 @@ npm install                                                # Update dependencies
 
 | Command | Description |
 |---------|-------------|
-| `npm start` | Start dev server (UMI_ENV=dev, with Mock) |
+| `npm start` | Start dev server (UMI_ENV=dev) |
 | `npm run dev` | Start dev server (UMI_ENV=dev, no Mock) |
 | `npm run start:no-mock` | Start without Mock |
-| `npm run start:pre` | Pre-production environment |
-| `npm run start:test` | Test environment |
 | `npm run build` | Build for production |
 | `npm run preview` | Preview built output (run `npm run build` first, port 8000) |
 | `npm run preview:build` | Build and preview (port 8000) |
@@ -80,16 +64,11 @@ npm install                                                # Update dependencies
 | `npm run biome` | Auto-fix with Biome |
 | `npm test` | Run tests |
 | `npm run test:coverage` | Test with coverage |
-| `npm run test:update` | Update test snapshots |
 | `npm run tsc` | Type check without emitting |
 | `npm run i18n-remove` | Remove i18n wrappers (locale=zh-CN) |
-| `npm run record` | Record request data for login scene |
 | `npm run openapi` | Generate API code from OpenAPI schema |
-| `npm run simple` | Strip demo pages and unused deps |
 
-> 💡 `UMI_ENV` switches environment configs, mapping to different proxy rules in `config/proxy.ts`.
-
-> 💡 `npm run simple` removes demo pages (dashboard, form, list etc.) and unused dependencies (plots, etc.), replacing with minimal routes. Ideal for starting from scratch. **Commit your code first so you can revert if needed.**
+> 💡 The development proxy in `config/proxy.ts` forwards management requests to the local Nest service.
 
 **Build tool:** This project uses [utoopack](https://github.com/utooland/utoo) (a next-gen bundler powered by Turbopack) as the default build tool, configured via the `utoopack` field in `config/config.ts`. utoopack is Webpack-compatible and supports `module.rules` for custom loaders.
 
@@ -286,7 +265,7 @@ await request('/api/users', { method: 'POST', data: { name: 'test' } });
 npm run openapi
 ```
 
-Auto-generates API calling code under `src/services/` based on `config/oneapi.json`.
+Starts from the running Nest Swagger schema at `http://localhost:3000/api-docs-json` and generates code under `src/services/cq-framework/`.
 
 > 💡 Generated code uses `import { request } from '@umijs/max'` directly — no manual wrapping needed.
 
@@ -549,18 +528,10 @@ Then run `/pro-upgrade` in Claude Code at the project root — AI will auto-diff
 ### Generate API Service Code
 
 ```bash
-# 1. Edit OpenAPI config: config/oneapi.json
-# 2. Run generation (overwrites src/services/ant-design-pro/)
+# 1. Start the Nest service
+# 2. Run generation (overwrites src/services/cq-framework/)
 npm run openapi
-# 3. Never edit generated code manually — modify oneapi.json and regenerate
-```
-
-### Switch to Simple Mode
-
-```bash
-git add -A && git commit -m "chore: save before simple"  # Must commit first
-npm run simple                                              # Irreversible
-npm install                                                 # Update dependencies
+# 3. Never edit generated code manually — update the Nest API and regenerate
 ```
 
 ## AI Skills (Claude Code)
@@ -613,12 +584,11 @@ For other AI assistants (Cursor, etc.), paste the content of `.claude/skills/pro
 
 ## Constraints & Gotchas
 
-- **`src/services/ant-design-pro/`** is auto-generated code. Do NOT edit manually. Modify `config/oneapi.json` and run `npm run openapi` to regenerate.
-- **`npm run simple` is irreversible**: It deletes demo pages and unused dependencies. Always commit before running.
+- **`src/services/cq-framework/`** is generated code. Start Nest and run `npm run openapi` to regenerate it from `http://localhost:3000/api-docs-json`.
 - **`.umi` temp directory**: `src/.umi` is auto-generated by Umi. Delete it and restart the dev server if you encounter unexpected behavior.
 - **Biome over ESLint**: This project uses Biome for linting and formatting. Do not install ESLint or Prettier plugins.
 - **Commit convention**: Must follow [Conventional Commits](https://www.conventionalcommits.org/) (e.g., `feat:`, `fix:`, `chore:`).
 - **`npx antd lint ./src`**: Must pass with zero errors and warnings before committing.
-- **Mock priority**: `mock/` directory for global mocks, `src/pages/**/_mock.ts` for page-level mocks. Both are auto-registered by Umi.
+- **Mock data**: Add `src/pages/**/_mock.ts` only for pages that need local data; authentication uses Nest.
 - **Styling priority**: Tailwind (layout) > antd-style (theme tokens) > CSS Modules (component styles) > Less (legacy global styles only).
 - **Path aliases**: `@/*` → `./src/*`, `@@/*` → `./src/.umi/*`

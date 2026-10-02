@@ -1,0 +1,10 @@
+# 本地依赖和构建产物不能覆盖镜像内的 Linux 依赖及容器构建结果。
+node_modules
+dist
+.umi
+coverage
+
+# 本地环境、版本库和日志不属于镜像构建上下文。
+.env
+.git
+*.log
