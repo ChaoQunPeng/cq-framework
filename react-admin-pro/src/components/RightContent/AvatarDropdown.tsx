@@ -35,21 +35,10 @@ const menuItems: MenuProps['items'] = [
   },
 ];
 
-/** 后端未提供退出接口，前端清理本地认证会话后返回登录页。 */
+/** 退出后回到普通登录页，避免切换账号时跳回前一个账号的受限页面。 */
 const loginOut = () => {
   clearAuthSession();
-  const { search, pathname } = window.location;
-  const urlParams = new URL(window.location.href).searchParams;
-  const searchParams = new URLSearchParams({
-    redirect: pathname + search,
-  });
-  const redirect = urlParams.get('redirect');
-  if (window.location.pathname !== '/user/login' && !redirect) {
-    history.replace({
-      pathname: '/user/login',
-      search: searchParams.toString(),
-    });
-  }
+  history.replace('/user/login');
 };
 
 export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({

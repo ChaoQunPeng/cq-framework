@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
+import { HydratedDocument, Schema as MongooseSchema, Types } from 'mongoose';
 import { AdminPermission } from '../../admin-permissions/schemas/admin-permission.schema';
 
 export type AdminRoleDocument = HydratedDocument<AdminRole>;
@@ -32,7 +32,8 @@ export class AdminRole {
 
   /** 角色拥有的权限 ID；空数组表示该角色暂未分配任何权限。 */
   @Prop({
-    type: [Types.ObjectId],
+    // 角色表单提交字符串 ID，写库时转为 ObjectId 供授权聚合查询关联权限。
+    type: [MongooseSchema.Types.ObjectId],
     ref: AdminPermission.name,
     required: true,
     default: [],

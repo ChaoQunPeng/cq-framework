@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
+import { HydratedDocument, Schema as MongooseSchema, Types } from 'mongoose';
 import { AdminRole } from '../../admin-roles/schemas/admin-role.schema';
 
 export type AdminUserDocument = HydratedDocument<AdminUser>;
@@ -40,7 +40,8 @@ export class AdminUser {
 
   /** 用户拥有的后台角色 ID；多角色权限由后续鉴权阶段合并。 */
   @Prop({
-    type: [Types.ObjectId],
+    // 表单提交字符串 ID，写库时必须转为 ObjectId 才能关联到角色集合。
+    type: [MongooseSchema.Types.ObjectId],
     ref: AdminRole.name,
     required: true,
   })

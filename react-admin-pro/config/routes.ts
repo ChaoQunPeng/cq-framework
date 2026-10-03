@@ -18,6 +18,12 @@ export default [
     icon: 'home',
     component: './Welcome',
   },
+  // 头像菜单的个人设置入口仅展示当前账号信息，不占用左侧业务菜单。
+  {
+    path: '/account/settings',
+    component: './account/settings',
+    hideInMenu: true,
+  },
   {
     path: '/system',
     name: 'system',
