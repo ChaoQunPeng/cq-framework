@@ -25,7 +25,8 @@ class LoginTestController {
 
 describe('LoginLogInterceptor', () => {
   let app: INestApplication;
-  const record = jest.fn(async (log: Record<string, unknown>) => log);
+  /** 模拟异步写入登录日志，保持与服务接口一致。 */
+  const record = jest.fn((log: Record<string, unknown>) => Promise.resolve(log));
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
