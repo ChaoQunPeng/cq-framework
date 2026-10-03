@@ -56,7 +56,7 @@ export class AdminAuthorizationService {
       ])
       .exec();
 
-    // 内置超级管理员始终拥有代码声明的全部系统权限；新增权限尚未运行 seed 时也可立即访问。
+    // 内置超级管理员始终拥有代码声明的全部系统权限，包括尚未同步到角色关联的新增权限。
     if (authorization?.roleCodes.includes('super_admin')) {
       authorization.permissionCodes = [
         ...new Set([

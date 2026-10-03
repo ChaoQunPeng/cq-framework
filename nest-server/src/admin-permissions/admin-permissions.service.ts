@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ADMIN_SYSTEM_PERMISSIONS } from './admin-permission.constants';
@@ -6,11 +6,16 @@ import { AdminPermission } from './schemas/admin-permission.schema';
 
 /** 管理系统预定义权限的查询、关联校验和初始化能力。 */
 @Injectable()
-export class AdminPermissionsService {
+export class AdminPermissionsService implements OnModuleInit {
   constructor(
     @InjectModel(AdminPermission.name)
     private readonly adminPermissionModel: Model<AdminPermission>,
   ) {}
+
+  /** 服务启动时同步代码定义的权限，确保新增权限可立即在角色表单中分配。 */
+  async onModuleInit(): Promise<void> {
+    await this.initializeSystemPermissions();
+  }
 
   /** 查询全部权限，供角色分配权限时展示选项。 */
   findAll() {
