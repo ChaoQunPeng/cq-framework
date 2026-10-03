@@ -42,6 +42,27 @@ export default [
       },
     ],
   },
+  // 系统日志作为独立菜单分组，两个子页面分别按只读权限展示。
+  {
+    path: '/system-logs',
+    name: 'systemLogs',
+    icon: 'fileText',
+    access: 'canReadSystemLogs',
+    routes: [
+      {
+        path: '/system-logs/operations',
+        name: 'operationLogs',
+        access: 'canReadOperationLog',
+        component: './operation-logs',
+      },
+      {
+        path: '/system-logs/logins',
+        name: 'loginLogs',
+        access: 'canReadLoginLog',
+        component: './login-logs',
+      },
+    ],
+  },
   // 保留旧地址用于历史书签跳转，不再作为独立菜单展示。
   {
     path: '/users',

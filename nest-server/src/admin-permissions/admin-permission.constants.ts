@@ -8,4 +8,6 @@ export const ADMIN_SYSTEM_PERMISSIONS = [
   { name: '新增角色', code: 'role:create' },
   { name: '编辑角色', code: 'role:update' },
   { name: '删除角色', code: 'role:delete' },
+  { name: '查看操作日志', code: 'operation-log:read' },
+  { name: '查看登录日志', code: 'login-log:read' },
 ] as const;

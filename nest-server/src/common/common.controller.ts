@@ -16,6 +16,7 @@ import {
 } from './common.constants';
 import { CommonService } from './common.service';
 import { UploadDto } from './dto/upload.dto';
+import { RecordOperation } from '../operation-logs/operation-log.decorator';
 
 /** 公共上传规则，供各业务模块复用的图片上传入口。 */
 const commonUploadOptions = {
@@ -49,11 +50,9 @@ export class CommonController {
    * @remarks 接收管理员提交的文件及业务场景，上传成功后返回该场景下的文件地址。
    */
   @Post('upload')
+  @RecordOperation('file:upload', '上传图片')
   @UseInterceptors(FileInterceptor('file', commonUploadOptions))
-  upload(
-    @Body() dto: UploadDto,
-    @UploadedFile() file?: Express.Multer.File,
-  ) {
+  upload(@Body() dto: UploadDto, @UploadedFile() file?: Express.Multer.File) {
     if (!file) throw new BadRequestException('请选择上传文件');
 
     return this.commonService.upload(file, dto.scene);

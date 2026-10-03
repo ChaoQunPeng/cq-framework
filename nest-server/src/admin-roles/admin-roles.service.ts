@@ -66,7 +66,7 @@ export class AdminRolesService {
     const { id, ...updates } = dto;
     const existingRole = await this.adminRoleModel.findById(id).exec();
     if (!existingRole) throw new NotFoundException('角色不存在');
-    // 内置超级管理员由 seed 维护全部系统权限，避免手工改动使后台失去管理入口。
+    // 内置超级管理员的有效权限由授权服务保障，角色资料禁止手工修改。
     if (existingRole.code === 'super_admin') {
       throw new ConflictException('内置超级管理员角色不可修改');
     }
@@ -114,7 +114,7 @@ export class AdminRolesService {
 
   /**
    * 幂等初始化超级管理员角色。
-   * 每次执行 seed 都会同步当前全部系统权限，确保新增权限自动授予超级管理员。
+   * seed 同步持久化的权限关联；运行时授权服务也会授予全部内置权限。
    */
   async initializeSystemRoles(): Promise<AdminRoleDocument> {
     const permissions = await this.adminPermissionsService.findAll();

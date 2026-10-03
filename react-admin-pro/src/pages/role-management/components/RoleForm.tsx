@@ -12,6 +12,8 @@ import {
 type RoleFormValues = Pick<RoleItem, 'name' | 'code' | 'permissionIds'>;
 
 const PERMISSION_GROUP_NAMES = {
+  'login-log': '登录日志',
+  'operation-log': '操作日志',
   role: '角色管理',
   user: '用户管理',
 } as const;

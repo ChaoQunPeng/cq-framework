@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { ADMIN_SYSTEM_PERMISSIONS } from '../admin-permissions/admin-permission.constants';
 import { AdminUser } from '../admin-users/schemas/admin-user.schema';
 import type { AdminAuthorization } from './admin-access.types';
 
@@ -54,6 +55,16 @@ export class AdminAuthorizationService {
         },
       ])
       .exec();
+
+    // 内置超级管理员始终拥有代码声明的全部系统权限；新增权限尚未运行 seed 时也可立即访问。
+    if (authorization?.roleCodes.includes('super_admin')) {
+      authorization.permissionCodes = [
+        ...new Set([
+          ...authorization.permissionCodes,
+          ...ADMIN_SYSTEM_PERMISSIONS.map((permission) => permission.code),
+        ]),
+      ];
+    }
 
     return authorization ?? null;
   }

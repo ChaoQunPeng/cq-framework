@@ -10,13 +10,14 @@ import { DeleteAdminUserDto } from './dto/delete-admin-user.dto';
 import { QueryAdminUsersDto } from './dto/query-admin-users.dto';
 import { UpdateAdminUserDto } from './dto/update-admin-user.dto';
 import { UpdateAdminUserStatusDto } from './dto/update-admin-user-status.dto';
+import { RecordOperation } from '../operation-logs/operation-log.decorator';
 
 /** 管理后台用户接口，统一校验后台 Token 后再处理用户和角色数据。 */
 @Controller('api/admin/users')
 // 用户管理接口统一校验管理端 Token，防止未登录请求修改用户及其角色分配。
 @UseGuards(AdminJwtAuthGuard, AdminAccessGuard)
 export class AdminUsersController {
-  constructor(private readonly adminUsersService: AdminUsersService) { }
+  constructor(private readonly adminUsersService: AdminUsersService) {}
 
   /**
    * 查询管理端用户。
@@ -33,6 +34,7 @@ export class AdminUsersController {
    * @remarks 服务层负责密码哈希及唯一性校验。
    */
   @Post('createUser')
+  @RecordOperation('user:create', '新增用户')
   @RequirePermissions('user:create')
   @RequireRoles('super_admin')
   createUser(@Body() dto: CreateAdminUserDto) {
@@ -44,6 +46,7 @@ export class AdminUsersController {
    * @remarks 用户 ID 与待更新字段一并通过请求体提交。
    */
   @Post('updateUser')
+  @RecordOperation('user:update', '修改用户')
   @RequirePermissions('user:update')
   updateUser(
     @Req() request: AdminAccessRequest,
@@ -57,6 +60,7 @@ export class AdminUsersController {
    * @remarks 当前操作者 ID 来自实时授权上下文，用于禁止停用自己。
    */
   @Post('updateUserStatus')
+  @RecordOperation('user:status', '修改用户状态')
   @RequirePermissions('user:update')
   updateUserStatus(
     @Req() request: AdminAccessRequest,
@@ -70,6 +74,7 @@ export class AdminUsersController {
    * @remarks 根据请求体中的用户 ID 删除用户。
    */
   @Post('deleteUser')
+  @RecordOperation('user:delete', '删除用户')
   @RequirePermissions('user:delete')
   deleteUser(
     @Req() request: AdminAccessRequest,

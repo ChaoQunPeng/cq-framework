@@ -11,6 +11,8 @@ import { AdminUsersModule } from './admin-users/admin-users.module';
 import { CommonModule } from './common/common.module';
 import { ApiExceptionFilter } from './common/filters/api-exception.filter';
 import { ApiResponseInterceptor } from './common/interceptors/api-response.interceptor';
+import { OperationLogInterceptor } from './operation-logs/operation-log.interceptor';
+import { OperationLogsModule } from './operation-logs/operation-logs.module';
 
 /** 各运行环境对应的配置文件，未匹配的环境（如本地开发）统一回退到 .env。 */
 const envFileMap: Record<string, string> = {
@@ -32,14 +34,17 @@ const envFileName = envFileMap[process.env.NODE_ENV ?? ''] ?? '.env';
     AdminRolesModule,
     AdminUsersModule,
     AdminAuthModule,
+    OperationLogsModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
     // 全局包装 Controller 的成功响应，静态图片等 Express 资源不经过该拦截器。
     { provide: APP_INTERCEPTOR, useClass: ApiResponseInterceptor },
+    // 仅采集显式标记且已成功完成的后台写操作。
+    { provide: APP_INTERCEPTOR, useExisting: OperationLogInterceptor },
     // 全局统一业务异常、参数校验异常和未知服务器异常的响应结构。
     { provide: APP_FILTER, useClass: ApiExceptionFilter },
   ],
 })
-export class AppModule { }
+export class AppModule {}

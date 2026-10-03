@@ -75,6 +75,9 @@ export default function RoleManagement() {
       width: 320,
       ellipsis: true,
       render: (_, record) => {
+        // 内置超级管理员的权限由后端系统权限定义自动授予，不通过角色编辑表单维护。
+        if (record.code === 'super_admin') return '全部系统权限（自动生效）';
+
         // 角色允许暂不分配权限；权限字典加载完成前保留 ID，避免列表出现空白。
         const permissionNames = record.permissionIds
           .map(
@@ -104,6 +107,8 @@ export default function RoleManagement() {
       hideInTable:
         !access.canUpdateRole && !access.canDeleteRole,
       render: (_, record) => {
+        if (record.code === 'super_admin') return '系统内置';
+
         /** 按权限逐项生成操作入口，无任何操作权限时隐藏整列。 */
         const actions = [
           access.canUpdateRole && record.code !== 'super_admin' ? (

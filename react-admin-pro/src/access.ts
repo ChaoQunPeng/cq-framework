@@ -12,6 +12,10 @@ export default function access(
 
   /** 按后端定义的稳定权限编码生成路由和页面操作使用的权限项。 */
   const hasPermission = (code: string) => permissionCodes.has(code);
+  // 内置超级管理员无需等待新增日志权限写入数据库即可进入只读日志页面。
+  const canReadOperationLog =
+    isSuperAdmin || hasPermission('operation-log:read');
+  const canReadLoginLog = isSuperAdmin || hasPermission('login-log:read');
 
   return {
     isSuperAdmin,
@@ -24,5 +28,8 @@ export default function access(
     canCreateRole: isSuperAdmin && hasPermission('role:create'),
     canUpdateRole: isSuperAdmin && hasPermission('role:update'),
     canDeleteRole: isSuperAdmin && hasPermission('role:delete'),
+    canReadSystemLogs: canReadOperationLog || canReadLoginLog,
+    canReadOperationLog,
+    canReadLoginLog,
   };
 }

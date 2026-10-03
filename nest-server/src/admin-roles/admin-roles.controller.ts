@@ -7,6 +7,7 @@ import { AdminRolesService } from './admin-roles.service';
 import { CreateAdminRoleDto } from './dto/create-admin-role.dto';
 import { DeleteAdminRoleDto } from './dto/delete-admin-role.dto';
 import { UpdateAdminRoleDto } from './dto/update-admin-role.dto';
+import { RecordOperation } from '../operation-logs/operation-log.decorator';
 
 /** 角色后台接口，统一通过 POST 动作接口管理角色及权限分配。 */
 @Controller('api/admin/roles')
@@ -23,6 +24,7 @@ export class AdminRolesController {
 
   /** 新增角色。 */
   @Post('createRole')
+  @RecordOperation('role:create', '新增角色')
   @RequirePermissions('role:create')
   @RequireRoles('super_admin')
   createRole(@Body() dto: CreateAdminRoleDto) {
@@ -31,6 +33,7 @@ export class AdminRolesController {
 
   /** 修改角色及其权限。 */
   @Post('updateRole')
+  @RecordOperation('role:update', '修改角色')
   @RequirePermissions('role:update')
   @RequireRoles('super_admin')
   updateRole(@Body() dto: UpdateAdminRoleDto) {
@@ -39,6 +42,7 @@ export class AdminRolesController {
 
   /** 删除角色。 */
   @Post('deleteRole')
+  @RecordOperation('role:delete', '删除角色')
   @RequirePermissions('role:delete')
   @RequireRoles('super_admin')
   deleteRole(@Body() dto: DeleteAdminRoleDto) {
