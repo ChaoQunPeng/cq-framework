@@ -2,6 +2,7 @@ import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { ModalForm, ProFormText } from '@ant-design/pro-components';
 import { App, Button, Checkbox, Form, type ButtonProps } from 'antd';
 import { createStyles } from 'antd-style';
+import { useIntl } from '@umijs/max';
 import {
   createRole,
   type PermissionItem,
@@ -92,6 +93,7 @@ function PermissionSelector({
   onChange,
 }: PermissionSelectorProps) {
   const { styles } = useStyles();
+  const { formatMessage } = useIntl();
   const permissionGroups = groupPermissions(permissions);
   const selectedPermissionIds = new Set(value);
   const allChecked =
@@ -171,7 +173,10 @@ function PermissionSelector({
                   handleSelectGroup(group.permissions, event.target.checked)
                 }
               >
-                {PERMISSION_GROUP_NAMES[group.name]}
+                {formatMessage({
+                  id: `pages.permissions.${group.name}`,
+                  defaultMessage: PERMISSION_GROUP_NAMES[group.name],
+                })}
               </Checkbox>
               <div className={styles.groupOptions}>
                 {group.permissions.map((permission) => (

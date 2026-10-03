@@ -50,6 +50,11 @@ export default [
     access: 'canReadSystemLogs',
     routes: [
       {
+        path: '/system-logs',
+        component: './system-logs',
+        hideInMenu: true,
+      },
+      {
         path: '/system-logs/operations',
         name: 'operationLogs',
         access: 'canReadOperationLog',

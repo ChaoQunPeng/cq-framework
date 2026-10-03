@@ -38,5 +38,9 @@ export class OperationLog {
 }
 
 export const OperationLogSchema = SchemaFactory.createForClass(OperationLog);
-OperationLogSchema.index({ createdAt: -1 });
+/** 操作日志保留 365 天，到期后由 MongoDB TTL 索引自动删除。 */
+OperationLogSchema.index(
+  { createdAt: -1 },
+  { expireAfterSeconds: 365 * 24 * 60 * 60 },
+);
 OperationLogSchema.index({ operatorName: 1, createdAt: -1 });

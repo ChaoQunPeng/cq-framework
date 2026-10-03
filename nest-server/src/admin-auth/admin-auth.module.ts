@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AdminAccessModule } from '../admin-access/admin-access.module';
 import { AdminUsersModule } from '../admin-users/admin-users.module';
 import { JwtAuthModule } from '../jwt-auth/jwt-auth.module';
+import { LoginLogInterceptor } from '../login-logs/login-log.interceptor';
 import { LoginLogsModule } from '../login-logs/login-logs.module';
 import { AdminAuthController } from './admin-auth.controller';
 import { AdminAuthService } from './admin-auth.service';
@@ -16,7 +17,7 @@ import { AdminJwtAuthGuard } from './admin-jwt.guard';
     LoginLogsModule,
   ],
   controllers: [AdminAuthController],
-  providers: [AdminAuthService, AdminJwtAuthGuard],
+  providers: [AdminAuthService, AdminJwtAuthGuard, LoginLogInterceptor],
   exports: [AdminJwtAuthGuard],
 })
 export class AdminAuthModule {}

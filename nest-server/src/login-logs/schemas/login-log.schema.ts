@@ -7,8 +7,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
   versionKey: false,
 })
 export class LoginLog {
-  /** 保留提交的账号，失败登录没有可用管理员 ID 时仍能定位尝试。 */
-  @Prop({ required: true })
+  /** 保留提交的账号；账号字段缺失的非法请求以空串记录。 */
+  @Prop({ default: '' })
   account!: string;
 
   @Prop()
@@ -31,5 +31,9 @@ export class LoginLog {
 }
 
 export const LoginLogSchema = SchemaFactory.createForClass(LoginLog);
-LoginLogSchema.index({ createdAt: -1 });
+/** 登录日志保留 185 天，到期后由 MongoDB TTL 索引自动删除。 */
+LoginLogSchema.index(
+  { createdAt: -1 },
+  { expireAfterSeconds: 185 * 24 * 60 * 60 },
+);
 LoginLogSchema.index({ account: 1, createdAt: -1 });

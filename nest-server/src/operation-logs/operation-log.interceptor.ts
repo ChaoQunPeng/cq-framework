@@ -30,6 +30,8 @@ export class OperationLogInterceptor implements NestInterceptor {
     if (!metadata) return next.handle();
 
     const request = context.switchToHttp().getRequest<AdminAccessRequest>();
+    // 上传不含对象 ID，其余已校验的管理写接口通过请求体提交目标 ID。
+    const requestedTargetId = (request.body as { id?: string } | undefined)?.id;
     return next.handle().pipe(
       mergeMap(async (result: { id?: string }) => {
         await this.logs.record({
@@ -37,7 +39,7 @@ export class OperationLogInterceptor implements NestInterceptor {
           operatorName: request.adminAccess.username,
           action: metadata.action,
           description: metadata.description,
-          targetId: request.body.id ?? result.id,
+          targetId: requestedTargetId ?? result.id,
           path: request.originalUrl,
           ip: request.ip,
           userAgent: request.get('user-agent'),

@@ -40,7 +40,8 @@ export class ApiExceptionFilter implements ExceptionFilter {
     }
 
     // 登录态失效需要前端据此跳转登录页，保留 401 业务码；其余业务异常统一 code 0 表示失败。
-    const isAuthFailure = isHttpException && status === HttpStatus.UNAUTHORIZED;
+    const isAuthFailure =
+      isHttpException && status === Number(HttpStatus.UNAUTHORIZED);
     const body: ApiResponse<Record<string, never>> = {
       code: isHttpException && !isAuthFailure ? 0 : status,
       msg,
