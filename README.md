@@ -8,16 +8,17 @@
 cq-framework/
 ├── nest-server/       # 后端：认证、权限、用户、角色、系统日志与通用上传
 ├── react-admin-pro/   # 管理端：登录、用户、角色与系统日志页面
-├── docs/              # 设计文档
 └── README.md
 ```
 
 ## 本地开发
 
+数据库使用 MongoDB（Mongoose），无需迁移脚本：准备一个可用的 MongoDB（Docker 容器、本地安装均可），在 `.env` 里配好 `MONGODB_URI`，再执行一次 seed 即可。
+
 ```bash
 cd nest-server
 cp .env.example .env
-# 编辑 .env，设置 JWT_SECRET 和 SEED_ADMIN_PASSWORD，并确认 MongoDB 地址可用。
+# 编辑 .env，配置 MONGODB_URI、JWT_SECRET 和 SEED_ADMIN_PASSWORD。
 npm install
 npm run seed
 npm run dev
@@ -31,9 +32,9 @@ npm install
 npm run dev
 ```
 
-后端默认监听 `http://localhost:3000`，管理端默认监听 `http://localhost:8000`。运行 seed 前需在 `nest-server/.env` 中配置可用的 MongoDB 连接与 JWT 密钥。管理端开发代理配置位于 `react-admin-pro/config/proxy.ts`。
+后端默认监听 `http://localhost:3000`，管理端默认监听 `http://localhost:8000`。管理端开发代理配置位于 `react-admin-pro/config/proxy.ts`。
 
-管理端依赖要求 Node.js 22.22.1 或更高版本。只有超级管理员可以创建管理员、分配用户角色和维护角色权限；普通管理员可按已授权的操作维护非超级管理员账号。通用图片上传接口要求有效的管理员登录态。
+只有超级管理员可以创建管理员、分配用户角色和维护角色权限；普通管理员可按已授权的操作维护非超级管理员账号。通用图片上传接口要求有效的管理员登录态。
 
 系统日志包含操作日志和登录日志。内置超级管理员在运行时拥有全部系统权限；首次启动仍需执行 seed 创建默认账号。以后新增系统权限时，后端启动会自动同步权限数据，供普通角色在角色管理页面分配。
 

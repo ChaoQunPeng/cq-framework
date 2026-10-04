@@ -4,6 +4,8 @@
 
 ## 本地启动
 
+数据库使用 MongoDB（Mongoose），无需迁移脚本：准备一个可用的 MongoDB（Docker 容器、本地安装均可），在 `.env` 里配好 `MONGODB_URI` 即可。
+
 复制 `.env.example` 为 `.env`，填写 `MONGODB_URI`、`JWT_SECRET` 和 `SEED_ADMIN_PASSWORD`。初始管理员账号由 `SEED_ADMIN_USERNAME` 和 `SEED_ADMIN_PHONE` 指定；seed 只在账号不存在时创建，不会覆盖已有密码。
 
 ```bash
