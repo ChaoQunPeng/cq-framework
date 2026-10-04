@@ -1,9 +1,13 @@
-name: cq-framework
+# 项目名从根目录 .env 的 COMPOSE_PROJECT_NAME 读取，未设置时回退到 cq-framework。
+name: ${COMPOSE_PROJECT_NAME:-cq-framework}
 
 services:
   mongo:
     image: mongo:7
     command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+    # 仅绑定宿主机回环地址，供本机 Compass 等客户端调试连接，不对外网开放。
+    ports:
+      - "127.0.0.1:27017:27017"
     volumes:
       - mongo-data:/data/db
     healthcheck:
@@ -19,7 +23,7 @@ services:
 
   api:
     build: ./nest-server
-    env_file: ./nest-server/.env
+    env_file: ./.env
     environment:
       NODE_ENV: production
       MONGODB_URI: mongodb://mongo:27017/cq-framework?replicaSet=rs0
